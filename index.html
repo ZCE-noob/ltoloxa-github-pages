@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07111d">
+  <meta name="description" content="Meet Ltoloxa, a shy glowing deep-sea creature, and explore how light and hunger shape its world.">
+  <title>Ltoloxa — A Deep-Sea Interactive</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <style>
+    :root { color-scheme: dark; --ink:#e8f2f7; --muted:#a7bdca; --cyan:#86e5f5; --line:rgba(174,224,240,.16); }
+    * { box-sizing:border-box }
+    html { scroll-behavior:smooth }
+    body { margin:0; background:radial-gradient(ellipse at 50% -15%,#153047 0,#091522 45rem,#050c14 100%); color:var(--ink); font:16px/1.7 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif }
+    .page { width:min(100% - 36px,960px); margin:auto; padding:54px 0 72px }
+    header { text-align:center; padding:18px 0 26px }
+    .eyebrow { color:var(--cyan); text-transform:uppercase; letter-spacing:.22em; font-size:.76rem; font-weight:700 }
+    h1 { font-family:Georgia,serif; font-size:clamp(2.8rem,8vw,5.5rem); letter-spacing:-.045em; line-height:1; margin:14px 0 12px; color:#e8fbff }
+    .subtitle { color:#b7d9e5; font:italic clamp(1.05rem,2.5vw,1.35rem)/1.5 Georgia,serif; margin:0 auto 14px; max-width:670px }
+    .byline { color:var(--muted); font-size:.9rem }
+    .panel { border:1px solid var(--line); background:linear-gradient(145deg,rgba(18,43,60,.9),rgba(8,20,32,.92)); border-radius:18px; box-shadow:0 24px 75px #0006 }
+    .interactive { padding:16px; margin:22px 0 58px }
+    #sketch-holder { width:100%; overflow:hidden; border-radius:12px; background:#0f192d; line-height:0 }
+    canvas { display:block; width:100% !important; height:auto !important }
+    .controls { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:14px 4px 2px; color:#c5dbe5; font-size:.92rem }
+    .controls strong { color:var(--cyan) }
+    button { border:1px solid #67d9ef66; background:#123246; color:#e4fbff; padding:9px 15px; border-radius:999px; font:inherit; cursor:pointer; white-space:nowrap }
+    button:hover,button:focus-visible { background:#1a4960; outline:2px solid #86e5f5; outline-offset:2px }
+    section { padding:0 4px; margin:0 0 46px }
+    h2 { display:flex; align-items:center; gap:12px; color:var(--cyan); font:600 1.55rem/1.3 Georgia,serif; margin:0 0 15px }
+    h2:before { content:""; width:26px; height:1px; background:#61d4e8 }
+    h3 { color:#e7f7fb; font-size:1.03rem; margin:24px 0 5px }
+    p,li { color:#c0d0d9 }
+    p { margin:0 0 14px }
+    .lead { font-size:1.1rem; color:#d8e8ee }
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:20px }
+    .card { border:1px solid var(--line); border-radius:12px; padding:16px; background:#0d1d2a }
+    .card b { color:#a5eff8; display:block; margin-bottom:4px }
+    .card span { color:var(--muted); font-size:.92rem }
+    .notes { padding:20px 22px; border-left:2px solid #4fb9d0; background:#10243399; border-radius:0 12px 12px 0 }
+    code { color:#a9ecf2; background:#142b3a; border-radius:4px; padding:1px 5px; font: .9em ui-monospace,SFMono-Regular,monospace }
+    a { color:#98e9f4; text-underline-offset:3px }
+    ul { padding-left:21px; margin:10px 0 }
+    li { padding:3px 0 }
+    footer { border-top:1px solid var(--line); padding-top:22px; color:#8096a3; font-size:.85rem }
+    @media(max-width:620px) { .page { width:min(100% - 24px,960px); padding-top:30px }.interactive { padding:9px; margin-bottom:44px }.controls { align-items:flex-start; font-size:.82rem }.grid { grid-template-columns:1fr }.card { padding:13px } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div class="eyebrow">An interactive deep-sea ecosystem</div>
+      <h1>Ltoloxa</h1>
+      <p class="subtitle">A small life in a vast dark ocean, caught between curiosity, light, and hunger.</p>
+      <div class="byline">Ce Zhang · Creative Coding Lab · NYU Shanghai</div>
+    </header>
+
+    <div class="interactive panel" aria-label="Interactive Ltoloxa experience">
+      <div id="sketch-holder"></div>
+      <div class="controls"><span><strong>Explore:</strong> Move your cursor as a flashlight. Click a dark area to drop shrimp. Bright light frightens Ltoloxa; food helps it recover.</span><button type="button" onclick="resetLtoloxa()">Start again</button></div>
+    </div>
+
+    <section>
+      <h2>Meet Ltoloxa</h2>
+      <p class="lead">In the deep ocean, sunlight never reaches. Many creatures make their own light, but even a little illumination can disturb the life around it.</p>
+      <p>Ltoloxa is a digital pet inspired by deep-sea animals and the playful axolotl from Minecraft. It drifts through dark water, leaving a faint glowing trail. Your cursor becomes a beam of light: Ltoloxa flees when you shine it nearby, and prolonged exposure makes it panic. Click in the darkness to release a shrimp. When it eats, its colors change. Leave it hungry for too long and it becomes a skeleton.</p>
+      <div class="grid"><div class="card"><b>Light</b><span>Move gently and watch how the creature responds to your beam.</span></div><div class="card"><b>Food</b><span>Drop shrimp away from the light and let Ltoloxa find it.</span></div><div class="card"><b>Care</b><span>Feed it before hunger takes over. Use “Start again” to reset.</span></div></div>
+    </section>
+
+    <section>
+      <h2>Design & composition</h2>
+      <p>The creature is built from simple shapes: ellipses, rectangles, and lines form its body, legs, and six glowing feelers. Shrimp began as a simple circle and became a curved shape made with arcs and triangles. The 800 × 500 scene uses a deep-water palette, bubbles, and a cursor flashlight to make seeing the creature part of the interaction.</p>
+      <p>This creates a small tension: light helps you see, but too much light changes the creature’s behavior. The interaction invites visitors to notice how human tools can disturb fragile environments.</p>
+    </section>
+
+    <section>
+      <h2>How it works</h2>
+      <div class="notes">
+        <h3>Local drawing coordinates</h3><p><code>push()</code>, <code>translate()</code>, and <code>rotate()</code> move the drawing origin to Ltoloxa and turn the creature toward its direction of travel. <code>pop()</code> keeps those transformations local.</p>
+        <h3>Changing states</h3><p>A frame counter tracks hunger and light exposure. At 20 seconds without food, the live creature changes to a skeleton. Sustained light triggers a red, overheated look and a faster escape response. Eating resets hunger and randomizes its colors.</p>
+        <h3>Smooth turning and boundaries</h3><p>The angle difference is normalized across the ±π boundary so Ltoloxa turns smoothly. A 70-pixel safety radius keeps its long tail inside the 800 × 500 canvas; at an edge it turns back into the scene.</p>
+        <h3>Food and light</h3><p>The creature ignores shrimp inside the flashlight radius, avoiding conflicting “chase food” and “escape light” behaviors. It seeks food placed in darker water instead.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Reflection</h2>
+      <p>During user testing, classmates suggested improving the food model, making the creature grow and change color after eating, and letting it die if it was continually neglected. Those suggestions shaped the final version.</p>
+      <p>The movement feels smooth, the shrimp reads clearly, and the transition to a skeleton makes hunger visible. The behavior is still simple over longer play, and the creature has little interaction after it dies. Future ideas include dragging food, tapping the glass to startle it, and finding a way to revive it.</p>
+    </section>
+
+    <section>
+      <h2>Credits & references</h2>
+      <ul>
+        <li><strong>Minecraft</strong> — axolotl form, gills, and playful color inspiration. <a href="https://www.minecraft.net/zh-hans" target="_blank" rel="noreferrer">Visit Minecraft</a></li>
+        <li><strong>Ocean Exploration Trust / E/V Nautilus</strong> — deep-sea footage and bioluminescent movement. <a href="https://nautiluslive.org/" target="_blank" rel="noreferrer">Visit Nautilus Live</a></li>
+        <li><strong>Daniel Shiffman, The Coding Train</strong> — array-based particle trails and autonomous steering. <a href="https://thecodingtrain.com/" target="_blank" rel="noreferrer">Visit The Coding Train</a></li>
+        <li><strong>p5.js reference</strong> — transforms, <code>atan2()</code>, and <code>dist()</code>. <a href="https://p5js.org/reference/" target="_blank" rel="noreferrer">Browse the reference</a></li>
+      </ul>
+    </section>
+    <footer>Ltoloxa · A creative coding project by Ce Zhang</footer>
+  </main>
+  <script src="sketch.js"></script>
+</body>
+</html>
